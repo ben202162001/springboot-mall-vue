@@ -2,64 +2,95 @@
   <div>
     <p v-if="!dataLoaded && !loading">點擊按鈕以取得產品數據</p>
     <button @click="fetchData">取得產品數據</button> <!-- 点击按钮触发 fetchData 方法 -->
-    <h1>---------------</h1>
-    <p>products.results:{{ products.results }}</p> <!-- 输出数据加载状态 -->
-    <p>productsData:{{productsData.value}}</p>
+
     <p v-if="loading">加载中...</p>
     
     <div v-if="dataLoaded">
-        <li v-for="product in productsData.value" :key="product.product_id">
-            <div>{{ product.product_name }}</div>
-            <div>Category: {{ product.category }}</div>
-            <div>Price: {{ product.price }}</div>
-            <div>Stock: {{ product.stock }}</div>
-            <div>Description: {{ product.description }}</div>
-            <div>Created Date: {{ product.created_date }}</div>
-            <div>Last Modified Date: {{ product.last_modified_date }}</div>
-            <div>Image URL: {{ product.image_url }}</div>
-        </li>
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>產品名稱</th>
+              <th>分類</th>
+              <th>價格</th>
+              <th>庫存</th>
+              <th>描述</th>
+              <th>創建日期</th>
+              <th>最後修改日期</th>
+              <th>圖片 URL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="product in productsData.value" :key="product.product_id" class="product-item">
+              <td>{{ product.product_name }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.price }}</td>
+              <td>{{ product.stock }}</td>
+              <td>{{ product.description }}</td>
+              <td>{{ formatDate(product.created_date) }}</td>
+              <td>{{ formatDate(product.last_modified_date) }}</td>
+              <td>{{ product.image_url }}</td>
+            </tr>
+          </tbody>
+        </table>
     </div>
-    <H1>---------------</H1>
     <p>{{ dataLoaded ? '資料已載入完成' : '資料尚未載入' }}</p>
     
   </div>
 </template>
 
-
 <script setup>
 import { reactive, ref } from 'vue';
 
-//const products = ref([]);
-const products = reactive([]);
-//const products = reactive({ results: [] });
-const dataLoaded = ref(false); // 添加一个状态来表示数据是否加载完成
-const loading = ref(false); // 添加一个状态来表示数据是否正在加载中
-const productsData = reactive([]);
+const products = reactive([]);//物件，包含一些頁面資訊
+const productsData = reactive([]);//列表資料的JSON
+const dataLoaded = ref(false);// 新增一個狀態來表示資料是否載入完成
+const loading = ref(false);// 新增一個狀態來表示資料是否正在載入中
+
+
 const fetchData = async () => {
   try {
-    console.log('開始api獲取數據');
-    loading.value = true; // 设置为 true 表示数据正在加载中
+    loading.value = true;
     const response = await fetch('http://localhost:8080/products');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    console.log('成功api獲取數據');
-
-    console.log('product的資料開始');
     products.results = await response.json();
-    dataLoaded.value = true; // 数据加载完成后设置为 true
-    console.log(products.results);
-    console.log('product的資料結束');
-    
-    console.log('productsData.value的資料開始');
-    productsData.value = products.results.results; // 将值分配给 productsData.value
-    console.log(productsData.value);
-    console.log('productsData.value的資料結束');
-    
+    dataLoaded.value = true;
+    productsData.value = products.results.results;
   } catch (error) {
     console.error('Error fetching products:', error);
   } finally {
-    loading.value = false; // 无论加载成功或失败，都将 loading 设置为 false
+    loading.value = false;
   }
 };
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}/${month}/${day}`;
+};
 </script>
+
+<style scoped>
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.product-table th {
+  background-color: #f2f2f2;
+}
+
+.product-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+</style>
