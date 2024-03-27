@@ -1,4 +1,5 @@
 <template>
+  
   <div>
     <p v-if="!dataLoaded && !loading">點擊按鈕以取得產品數據</p>
     <button @click="fetchData">取得產品數據</button> <!-- 点击按钮触发 fetchData 方法 -->
@@ -20,7 +21,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="product in productsData.value" :key="product.product_id" class="product-item">
+            <tr v-for="product in products.value.results" :key="product.product_id" class="product-item">
               <td>{{ product.product_name }}</td>
               <td>{{ product.category }}</td>
               <td>{{ product.price }}</td>
@@ -42,7 +43,6 @@
 import { reactive, ref } from 'vue';
 
 const products = reactive([]);//物件，包含一些頁面資訊
-const productsData = reactive([]);//列表資料的JSON
 const dataLoaded = ref(false);// 新增一個狀態來表示資料是否載入完成
 const loading = ref(false);// 新增一個狀態來表示資料是否正在載入中
 
@@ -50,13 +50,12 @@ const loading = ref(false);// 新增一個狀態來表示資料是否正在載�
 const fetchData = async () => {
   try {
     loading.value = true;
-    const response = await fetch('http://localhost:8080/products');
+    const response = await fetch('http://localhost:8080/AllProducts');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    products.results = await response.json();
+    products.value = await response.json();
     dataLoaded.value = true;
-    productsData.value = products.results.results;
   } catch (error) {
     console.error('Error fetching products:', error);
   } finally {
