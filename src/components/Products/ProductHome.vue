@@ -1,3 +1,4 @@
+<!-- ProductHome.vue -->
 <template>
     <div>
       <FindProducts />
