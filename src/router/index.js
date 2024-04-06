@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import ProductHome from '../components/Products/ProductHome.vue';
 import HelloWorld from '../components/HelloWorld.vue';
+import AccountLogin from '../components/Accounts/AccountLogin.vue';
 console.log("index.js")
 const routes = [
   {
@@ -12,6 +13,10 @@ const routes = [
     path: '/HelloWorld',
     name: 'HelloWorld',
     component: HelloWorld
+  },{
+    path: '/Login',
+    name: 'Login',
+    component: AccountLogin
   }
 ];
 

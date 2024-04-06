@@ -5,7 +5,9 @@
     <div>
     <div class="button-container">
       <button @click="goToProductHome" class="styled-button">查詢商品</button>
-      <button @click="goToHelloWorld" class="styled-button">HelloWorld</button>
+      <button @click="goToHelloWorld" class="styled-button">查詢我的訂單</button>
+      <button @click="goToHelloWorld" class="styled-button">管理員管理商品</button>
+      <button @click="goToLogin" class="styled-button">登入</button>
     </div>
     <router-view/>
   </div>
@@ -22,6 +24,11 @@ const goToProductHome = () => {
 };
 const goToHelloWorld = () => {
   router.push({ name: 'HelloWorld' });
+};
+const goToLogin = () => {
+  const phone = 'your_phone_number';
+  const password = 'your_password';
+  router.push({ name: 'Login', query: { phone, password } });
 };
 
 </script>
