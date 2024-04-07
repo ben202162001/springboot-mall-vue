@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import ProductHome from '../components/Products/ProductHome.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 import AccountLogin from '../components/Accounts/AccountLogin.vue';
+import VueHome from '../components/VueHome.vue';
 console.log("index.js")
 const routes = [
   {
@@ -17,6 +18,14 @@ const routes = [
     path: '/Login',
     name: 'Login',
     component: AccountLogin
+  },{
+    path: '/',
+    name: 'VueHome',
+    component: VueHome
+  },{
+    path: '/Home',
+    name: 'Home',
+    component: VueHome
   }
 ];
 

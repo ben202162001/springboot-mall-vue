@@ -11,7 +11,7 @@
         </ul>
       </nav>
       <div class="user-actions">
-        <a href="#">登入</a>
+        <a href="http://localhost:3000/Login">登入</a>
         <a href="#">註冊</a>
         <!-- 添加其他用戶操作連結，如購物車 -->
       </div>
