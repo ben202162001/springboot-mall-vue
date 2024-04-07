@@ -43,12 +43,30 @@ export default {
         this.message = responseData.massage;
         // Check if login is successful, then redirect
         if (this.massageStatus === 'success') {
-          this.$router.push('/Home'); // Redirect to home page if login is successful
+          // Call another API to get user data
+          await this.getUserData();
+          // Redirect to home page if login is successful
+          this.$router.push('/Home'); 
         }
       } catch (error) {
         this.error = error.message;
       } finally {
         this.isLoading = false;
+      }
+    },
+    async getUserData() {
+      try {
+        const url = `http://localhost:8080/getUserData?phone_Number=${this.phone_Number}&password=${this.password}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const userData = await response.json();
+        // Pass the user data as props to the next component
+        this.$emit('userData', userData);
+        console.log(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     }
   }
