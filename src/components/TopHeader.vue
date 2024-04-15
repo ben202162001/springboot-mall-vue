@@ -11,15 +11,31 @@
         </ul>
       </nav>
       <div class="user-actions">
+
+      <p v-if="this.$store.state.user">
+        <a> HI!{{ this.$store.state.user.userName }} </a>
+        <a href="http://localhost:3000/Login">登出</a>
+      </p>
+      <p v-else>
         <a href="http://localhost:3000/Login">登入</a>
         <a href="#">註冊</a>
-        <!-- 添加其他用戶操作連結，如購物車 -->
+        <!-- 添加其他用戶操作連結，如購物車 --></p>
+        
       </div>
     </header>
   </template>
   
-  <script setup>
-  // 如果有需要的話，可以在這裡加入相關邏輯
+  <script>
+//   export default {
+//    mounted() {
+//     this.$store.subscribe(() => {
+//       console.log('下面是top的全域store');
+//       console.log(this.$store.state);
+//       console.log(this.$store.state.user);
+//       console.log(this.$store.state.user.userName);
+//     });
+//   }
+// };
   </script>
   
   <style scoped>

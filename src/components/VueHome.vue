@@ -22,9 +22,9 @@ const goToProductHome = () => {
 const goToHelloWorld = () => {
   router.push({ name: 'HelloWorld' });
 };
-
-
 </script>
+
+
 <style scoped>
 .button-container {
   background-color: #2c3e50; /* Background color of the header block */

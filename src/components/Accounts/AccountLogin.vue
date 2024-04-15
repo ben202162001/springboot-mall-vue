@@ -1,3 +1,4 @@
+<!-- src/components/Accounts/AccountLogin -->
 <template>
   <div class="login-container">
     <div class="login-form">
@@ -16,6 +17,7 @@
 </template>
 
 <script>
+import { store } from '@/store'; // 直接從 Vuex 存儲文件中導入 store
 export default {
   data() {
     return {
@@ -46,7 +48,7 @@ export default {
           // Call another API to get user data
           await this.getUserData();
           // Redirect to home page if login is successful
-          this.$router.push('/Home'); 
+          this.$router.push('/'); 
         }
       } catch (error) {
         this.error = error.message;
@@ -63,8 +65,13 @@ export default {
         }
         const userData = await response.json();
         // Pass the user data as props to the next component
-        this.$emit('userData', userData);
-        console.log(userData);
+        //this.$emit('userData', userData);
+        // console.log(userData);
+        store.dispatch('loginUser', userData);
+        // console.log('下面是全域');
+        // console.log(this.$store.state.user);
+        // console.log(this.$store.state.user.userName);
+        // console.log(this.$store.state.user.createTime);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }

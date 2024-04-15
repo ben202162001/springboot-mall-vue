@@ -38,6 +38,7 @@
     <!-- Search Results -->
     <div class="search-results">
       <p v-if="loading">加载中...</p>
+      <p></p>
       <div v-if="dataLoaded">
           <table class="product-table">
             <thead>
