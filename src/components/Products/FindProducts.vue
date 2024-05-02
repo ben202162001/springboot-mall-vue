@@ -37,37 +37,42 @@
     
     <!-- Search Results -->
     <div class="search-results">
+      <p>{{ dataLoaded ? '搜尋完成' : '輸入搜尋條件' }}</p>
       <p v-if="loading">加载中...</p>
+      
       <p></p>
       <div v-if="dataLoaded">
           <table class="product-table">
             <thead>
               <tr>
+                <th>圖片</th>
                 <th>產品名稱</th>
                 <th>分類</th>
                 <th>價格</th>
-                <th>庫存</th>
                 <th>描述</th>
-                <th>創建日期</th>
-                <th>最後修改日期</th>
-                <th>圖片 URL</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="product in products.value.results" :key="product.product_id" class="product-item">
+                <td>
+                  <!-- Added img tag to display the image -->
+                  <img :src="product.image_url" alt="Product Image" style="max-width: 100px; max-height: 100px;">
+                </td>
                 <td>{{ product.product_name }}</td>
                 <td>{{ product.category }}</td>
                 <td>{{ product.price }}</td>
-                <td>{{ product.stock }}</td>
                 <td>{{ product.description }}</td>
-                <td>{{ formatDate(product.created_date) }}</td>
-                <td>{{ formatDate(product.last_modified_date) }}</td>
-                <td>{{ product.image_url }}</td>
+                <td>
+                  <router-link :to="{ name: 'OrderHome', params: { productId: product.product_id }}">
+                    我要下訂！
+                  </router-link>
+                </td>
               </tr>
             </tbody>
           </table>
       </div>
-      <p>{{ dataLoaded ? '搜尋完成' : '輸入搜尋條件' }}</p>
+      
     </div>
   </div>
 </template>
@@ -111,13 +116,13 @@ const fetchData = async () => {
   }
 };
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}/${month}/${day}`;
-};
+// const formatDate = (dateString) => {
+//   const date = new Date(dateString);
+//   const year = date.getFullYear();
+//   const month = String(date.getMonth() + 1).padStart(2, '0');
+//   const day = String(date.getDate()).padStart(2, '0');
+//   return `${year}/${month}/${day}`;
+// };
 </script>
 
 <style scoped>
