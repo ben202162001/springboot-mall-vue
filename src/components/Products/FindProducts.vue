@@ -33,12 +33,13 @@
         </div>
         <button type="submit">Search</button>
       </form>
+      <p>{{ dataLoaded ? '搜尋完成' : '輸入搜尋條件' }}</p>
+      <p v-if="loading">加载中...</p>
     </div>
     
     <!-- Search Results -->
     <div class="search-results">
-      <p>{{ dataLoaded ? '搜尋完成' : '輸入搜尋條件' }}</p>
-      <p v-if="loading">加载中...</p>
+      
       
       <p></p>
       <div v-if="dataLoaded">
