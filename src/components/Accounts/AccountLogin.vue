@@ -2,7 +2,9 @@
 <template>
   <div class="login-container">
     <div class="login-form">
+      <p align="center">手機:</p>
       <input v-model="phone_Number" type="text" placeholder="Phone Number">
+      <p align="center">密碼:</p>
       <input v-model="password" type="password" placeholder="Password">
       <button @click="login">Login</button>
       <p v-if="isLoading">Loading...</p>

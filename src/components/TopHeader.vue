@@ -3,7 +3,7 @@
       <div class="logo">某某電商網站</div>
       <nav class="nav-links">
         <ul>
-          <li><a href="#">首頁</a></li>
+          <li><a href="http://localhost:3000/">首頁</a></li>
           <li><a href="#">產品</a></li>
           <li><a href="#">關於我們</a></li>
           <li><a href="#">聯繫我們</a></li>

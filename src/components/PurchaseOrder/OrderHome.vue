@@ -12,7 +12,14 @@
         <span class="detail-label">{{ key }}</span>
         <span class="detail-value">{{ value }}</span>
       </div>
-      <button @click="purchase">購買產品</button>
+      
+      <p v-if="$store.state.user">
+        <button @click="purchase">購買產品</button>
+      </p>
+      <p v-else>
+        <a>請先登入</a>
+      </p>
+
     </div>
   </div>
   
@@ -22,6 +29,8 @@
 import VueHome from '../VueHome.vue'; 
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { store } from '@/store'; // 直接從 Vuex 存儲文件中導入 store
+ console.log(store.state.user);
 
 const route = useRoute();
 const productId = ref(null);
@@ -55,7 +64,7 @@ const fetchData = async () => {
 const purchase = async () => {
   try {
     const purchaseData = {
-      phone_number: "123456789000",
+      phone_number: store.state.user.phoneNumber,
       product_id: productDetail.value.productId, // 使用產品詳細資訊中的產品 ID
       quantity: 1, // 假設預設購買 1 個
       total_price: productDetail.value.price, // 假設購買 1 個的價格即總價格
@@ -78,10 +87,8 @@ const purchase = async () => {
     // 處理購買成功後的操作
     console.log('Purchase successful!');
      // 顯示購買成功的彈跳視窗
-     alert('購買成功！');
+    alert('購買成功！');
 
-// 導頁至指定 URL
-  window.location.href = 'http://localhost:3000/product';
   } catch (error) {
     console.error('Error purchasing product:', error);
   }

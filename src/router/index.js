@@ -4,7 +4,7 @@ import ProductHome from '../components/Products/ProductHome.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 import AccountLogin from '../components/Accounts/AccountLogin.vue';
 import OrderHome from '../components/PurchaseOrder/OrderHome.vue';
-import VueHome from '../components/VueHome.vue';
+import FirstPage from '../components/FirstPage.vue';
 console.log("index.js from 路由器")
 const routes = [
   {
@@ -21,8 +21,8 @@ const routes = [
     component: AccountLogin
   },{
     path: '/',
-    name: 'Home',
-    component: VueHome
+    name: 'FirstPage',
+    component: FirstPage
   },
   {
     path: '/OrderHome/:productId',
