@@ -3,57 +3,96 @@
   <div>
     <VueHome />
   </div>
-  <div>
-    <p>{{ dataLoaded ? '搜尋完成' : '未搜尋' }}</p>
-    <p v-if="loading">加载中...</p>
-    <div class="product-details">
-      <h2>產品詳細資訊</h2>
-      <div class="detail-item" v-for="(value, key) in productDetail" :key="key">
-        <span class="detail-label">{{ key }}</span>
-        <span class="detail-value">{{ value }}</span>
-      </div>
-      
-      <p v-if="$store.state.user">
-        <button @click="purchase">購買產品</button>
-      </p>
-      <p v-else>
-        <a>請先登入</a>
-      </p>
+  <div class="centered-content">
+    <div>
+      <p v-if="loading">加载中...</p>
+      <div class="product-details">
+        <h2>產品詳細資訊</h2>
+        <div class="detail-item" v-for="(value, key) in productDetail" :key="key">
+          <span class="detail-label"> {{ key }}</span>
+          <span class="detail-value">:{{ value }}</span>
+        </div>
+        <div>------------------------------------------------------------------------------------------------------------</div>
+        <h2>產品資訊</h2>
+        <div class="detail-item" v-for="(value, key) in product" :key="key">
+          <span class="detail-label"> {{ key }}</span>
+          <span class="detail-value">:{{ value }}</span>
+        </div>
 
+        <div v-if="$store.state.user">
+          <h3><input type="number" id="quantity" v-model="quantity"></h3>
+          <div class="button-container">
+            <h3><button class="custom-button" @click="purchase">下單!</button></h3>
+          </div>
+        </div>
+        <div v-else>
+          請先<button class="custom-button" @click="goToLogin">登入</button>
+        </div>
+
+        <!-- 显示 massageStatus -->
+        <div v-if="ispurchase">
+          <div v-if="responseData.massageStatus === 'success'">
+            <p>購買成功！</p>
+            <p>massageStatus: {{ responseData.massageStatus }}</p>
+            <p>Error Time: {{ responseData.errorTime }}</p>
+            <p>{{ responseData.massage }}</p>
+          </div>
+          <div v-else>
+            <p>購買失敗！</p>
+            <p>massageStatus: {{ responseData.massageStatus }}</p>
+            <p>Error Time: {{ responseData.errorTime }}</p>
+            <p>{{ responseData.massage }}</p>
+          </div>
+        </div>
+        <div class="button-container">
+          <button class="custom-button" @click="goBack">返回</button>
+        </div>
+      </div>
     </div>
   </div>
-  
 </template>
 
 <script setup>
-import VueHome from '../VueHome.vue'; 
+import VueHome from '../VueHome.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { store } from '@/store'; // 直接從 Vuex 存儲文件中導入 store
- console.log(store.state.user);
+import { useRouter } from 'vue-router';
 
-const route = useRoute();
+const quantity = ref(1);
 const productId = ref(null);
 const loading = ref(false); // 用於追蹤資料是否正在加載中
-const dataLoaded = ref(false); // 用於追蹤資料是否已加載完成
-const productDetail = ref([]); // 用於儲存從服務器返回的產品資料
+const productDetail = ref({}); // 用於儲存從服務器返回的產品資料細項
+const product = ref({}); // 用於儲存從服務器返回的產品資料
+const ispurchase = ref(false); // 用於追蹤資料是否已加載完成
+const responseData = ref({});
 const fetchData = async () => {
   try {
     loading.value = true;
-    // 這裡放入你的 URL 和需要的參數
-    const queryParams = new URLSearchParams({
+
+
+    //取商品的詳細資料
+    const queryParams_productDetail = new URLSearchParams({
       productId: String(productId.value), // 使用之前獲取的 productId
     });
-    const url = `http://localhost:8080/ProductDetail?${queryParams.toString()}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    const url_productDetail = `http://localhost:8080/ProductDetail?${queryParams_productDetail.toString()}`;
+    const response_productDetail = await fetch(url_productDetail);
+    if (!response_productDetail.ok) {
+      throw new Error('Network response_productDetail was not ok');
     }
-    const data = await response.json();
-    // 在這裡處理從服務器返回的資料
-    // 例如，將資料設置到 products 中
-    productDetail.value = data;
-    dataLoaded.value = true;
+    productDetail.value = await response_productDetail.json();
+  
+    //取商品的資料
+    const queryParams_product = new URLSearchParams({
+      productId: String(productId.value), // 使用之前獲取的 productId
+    });
+    const url_product = `http://localhost:8080/Product?${queryParams_product.toString()}`;
+    const response_product = await fetch(url_product);
+    if (!response_product.ok) {
+      throw new Error('Network response_product was not ok');
+    }
+    product.value = await response_product.json();
+
   } catch (error) {
     console.error('Error fetching product details:', error);
   } finally {
@@ -66,8 +105,8 @@ const purchase = async () => {
     const purchaseData = {
       phone_number: store.state.user.phoneNumber,
       product_id: productDetail.value.productId, // 使用產品詳細資訊中的產品 ID
-      quantity: 1, // 假設預設購買 1 個
-      total_price: productDetail.value.price, // 假設購買 1 個的價格即總價格
+      quantity: quantity.value, // 購買數量
+      total_price: product.value.price * quantity.value, // 計算總價格
       buy_date: new Date().toISOString(), // 現在時間
       remark: "This is a remark."
     };
@@ -84,36 +123,35 @@ const purchase = async () => {
       throw new Error('Network response was not ok');
     }
 
+    // 解析 JSON 数据
+    responseData.value = await response.json();
+
+    // 访问 JSON 数据中的属性
+    console.log(responseData.value);
     // 處理購買成功後的操作
     console.log('Purchase successful!');
-     // 顯示購買成功的彈跳視窗
-    alert('購買成功！');
-
+    ispurchase.value = true;
   } catch (error) {
     console.error('Error purchasing product:', error);
   }
 };
 
+const router = useRouter();
 
+const goToLogin = () => {
+  router.push({ name: 'Login' });
+};
+const goBack = () => {
+  router.go(-1);
+};
+
+const route = useRoute();
 onMounted(() => {
   productId.value = route.params.productId;
   fetchData();
 });
-
-// onMounted(() => {
-//   console.log('组件挂载完成');
-// });
-
-// onUpdated(() => {
-//   console.log('组件更新完成');
-// });
-
-// onUnmounted(() => {
-//   console.log('组件将要卸载');
-// });
 </script>
 
-  
 <style scoped>
 .product-details {
   margin-top: 20px;
@@ -131,5 +169,31 @@ onMounted(() => {
 
 .detail-value {
   flex: 3;
+}
+
+.centered-content {
+  display: flex;
+  justify-content: center;
+  /* 水平居中 */
+  height: 100vh;
+  /* 设置高度以铺满整个视口 */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.custom-button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.custom-button:hover {
+  background-color: #45a049;
 }
 </style>
