@@ -6,15 +6,15 @@
     <div v-else>
       <h2>會員訂單資料</h2>
       <div v-for="order in orders" :key="order.buy_date" class="order-container">
-  <div class="order-details">
-    <p><strong>訂單日期:</strong> {{ order.buy_date }}</p>
-    <p><strong>商品編號:</strong> {{ order.product_id }}</p>
-    <p><strong>數量:</strong> {{ order.quantity }}</p>
-    <p><strong>總價:</strong> {{ order.total_price }}</p>
-    <p><strong>備註:</strong> {{ order.remark }}</p>
-  </div>
-  <hr class="order-divider">
-</div>
+        <div class="order-details">
+          <p><strong>訂單日期:</strong> {{ order.buy_date }}</p>
+          <p><strong>商品編號:</strong> {{ order.product_id }}</p>
+          <p><strong>數量:</strong> {{ order.quantity }}</p>
+          <p><strong>總價:</strong> {{ order.total_price }}</p>
+          <p><strong>備註:</strong> {{ order.remark }}</p>
+        </div>
+        <hr class="order-divider">
+      </div>
     </div>
   </div>
 </template>

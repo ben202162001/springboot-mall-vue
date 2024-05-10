@@ -18,24 +18,29 @@
           <span class="detail-label"> {{ key }}</span>
           <span class="detail-value">:{{ value }}</span>
         </div>
+        <div>------------------------------------------------------------------------------------------------------------</div>
 
         <div v-if="$store.state.user">
-          <h3><input type="number" id="quantity" v-model="quantity"></h3>
+          <h3>購買數量<input type="number" id="quantity" v-model="quantity"></h3>
+          <h3>單價 {{product.price}}</h3>
+          <h3>總價 {{product.price*quantity}}</h3>
           <div class="button-container">
             <h3><button class="custom-button" @click="purchase">下單!</button></h3>
           </div>
         </div>
         <div v-else>
-          請先<button class="custom-button" @click="goToLogin">登入</button>
+          尚未登入，請先<button class="custom-button" @click="goToLogin">登入</button>
         </div>
+        
 
-        <!-- 显示 massageStatus -->
         <div v-if="ispurchase">
           <div v-if="responseData.massageStatus === 'success'">
             <p>購買成功！</p>
             <p>massageStatus: {{ responseData.massageStatus }}</p>
             <p>Error Time: {{ responseData.errorTime }}</p>
             <p>{{ responseData.massage }}</p>
+            <button @click="goToMyOrder" >查看訂單</button>
+            
           </div>
           <div v-else>
             <p>購買失敗！</p>
@@ -143,6 +148,9 @@ const goToLogin = () => {
 };
 const goBack = () => {
   router.go(-1);
+};
+const goToMyOrder = () => {
+  router.push({ name: 'AccountOrders', params: { PhoneNumber: store.state.user.phoneNumber } });
 };
 
 const route = useRoute();
